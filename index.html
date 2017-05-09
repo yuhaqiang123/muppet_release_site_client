@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title global="true" key="login.title">用户登录</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<script type="text/javascript" src="scripts/plugins/jquery/jquery-2.1.4.min.js"></script>
+	<script type="text/javascrpts" src="scripts/util.js"></script><!-- 工具方法 -->
+	<script type="text/javascript" src="scripts/login.js"></script><!-- 登录方法 -->
+	<link href="css/login2.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<h1 global="true" key="login.option.title">后台登录模板下载</h1>
+
+	<div class="login" style="margin-top: 50px;">
+
+		<div class="header">
+			<div class="switch" id="switch">
+				<a class="switch_btn_focus" id="switch_qlogin"
+					href="javascript:void(0);" tabindex="7" global="true"
+					key="login.quickLogin">快速登录</a> <a class="switch_btn"
+					id="switch_login" href="javascript:void(0);" tabindex="8"
+					key="register.quickRegister" global="true">快速注册</a>
+				<div class="switch_bottom" id="switch_bottom"
+					style="position: absolute; width: 64px; left: 0px;"></div>
+			</div>
+		</div>
+
+
+		<div class="web_qr_login" id="web_qr_login"
+			style="display: block; height: 300px;">
+
+			<!--登录-->
+			<div class="web_login" id="web_login">
+				<div class="login-box">
+					<div class="login_form">
+						<form action="" name="loginform"
+							accept-charset="utf-8" id="login_form" class="loginForm"
+							method="post">
+							<input type="hidden" name="did" value="0" /> <input
+								type="hidden" name="to" value="log" />
+							<div class="uinArea" id="uinArea">
+								<label class="input-tips" for="u" global="true"
+									key="login.email">邮箱：</label>
+								<div class="inputOuter" id="uArea" style="">
+									<input type="text" id="loginEmail" name="loginEmail"
+										class="inputstyle" /> <label class="" id="loginEmailTip"
+										style="font: red"></label>
+								</div>
+							</div>
+							<div class="pwdArea" id="pwdArea">
+								<label class="input-tips" for="p" global="true"
+									key="login.password">密码：</label>
+								<div class="inputOuter" id="pArea">
+									<input type="password" id="password" name="password"
+										class="inputstyle" /> <label id="passwordTip" style=""></label>
+								</div>
+							</div>
+
+							<div id="validateCode" style="display: inline-block;">
+								<label class="" for="p" global="true" key="login.password">验证码：</label>
+								
+								<input type="password" id="validateCode" name="validateCode"
+									class="inputstyle" style="width: 50px" />
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									 <label for="p"><b>fjei</b></label>
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="">刷新</a>
+									 <label id="validateCodeTip" style=""></label>
+							</div>
+
+
+							<div style="padding-left: 50px; margin-top: 20px;">
+								<input id="loginBtn" value="登 录" style="width: 150px;"
+									class="button_blue"></input>
+							</div>
+						</form>
+					</div>
+
+				</div>
+
+			</div>
+			<!--登录end-->
+		</div>
+
+		<!--注册-->
+		<div class="qlogin" id="qlogin" style="display: none;">
+
+			<div class="web_login">
+				<form name="form2" id="regUser" accept-charset="utf-8"
+					action="" method="post">
+					<input type="hidden" name="to" value="reg" /> <input type="hidden"
+						name="did" value="0" />
+					<ul class="reg_form" id="reg-ul">
+						<div id="userCue" class="cue" global="true"
+							key="register.quickRegister.style">快速注册请注意格式</div>
+						<li><label for="user" class="input-tips2" global="true"
+							key="register.email">用户名：</label>
+							<div class="inputOuter2">
+								<input type="text" id="registerEmail" name="registerEmail"
+									class="inputstyle2" /><label id="registerEmailTip"
+									style="font: red"></label>
+							</div></li>
+
+						<li><label for="passwd" class="input-tips2" global="true"
+							key="register.password">密码：</label>
+							<div class="inputOuter2">
+								<input type="password" id="registerPassword" name="password" maxlength="10"
+									class="inputstyle2" />
+									<label id="registerPasswordTip"
+									style="font: red"></label>
+							</div></li>
+						<li><label for="passwd2" class="input-tips2" global="true"
+							key="register.password.confirm">确认密码：</label>
+							<div class="inputOuter2">
+								<input type="password" id="registerConfirmPassword" name="" maxlength="10"
+									class="inputstyle2" />
+									<label id="registerConfirmPasswordTip"
+									style="font: red"></label>
+							</div></li>
+						<li>
+						<div id="validateCode" style="display: inline-block;">
+								<label class="" for="p" global="true" key="login.password">验证码：</label>
+								
+								<input type="" id="registerValidateCode" name="registerValidateCode"
+									class="inputstyle" style="width: 50px" />
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									 <b><label for="p" id="code"></label></b>
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="registerRefreshValidateCode">刷新</a>
+									 <label id="registerValidateCodeTip"
+									style="font: red"></label>
+							</div>
+						</li>
+						<li>
+							<div style="padding-left: 50px; margin-top: 20px;">
+									<input id="registerBtn" value="注 册" style="width: 150px;"
+										class="button_blue"></input>
+							</div>
+							 <label id="registerTip"
+									style="font: red"></label>
+						</li>
+
+					</ul>
+				</form>
+			</div>
+		</div>
+		<!--注册end-->
+	</div>
+</body>
+</html>
