@@ -79,7 +79,7 @@ input::-ms-clear {
 }
 
 .web_login {
-	width:370px;
+	width:400px;
 	position:relative;
 }
 #web_login{_left:60px;*left:0;}

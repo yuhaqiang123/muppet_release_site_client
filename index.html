@@ -27,7 +27,7 @@
 
 
 		<div class="web_qr_login" id="web_qr_login"
-			style="display: block; height: 300px;">
+			style="display: block; height: 400px;">
 
 			<!--登录-->
 			<div class="web_login" id="web_login">
@@ -51,26 +51,32 @@
 								<label class="input-tips" for="p" global="true"
 									key="login.password">密码：</label>
 								<div class="inputOuter" id="pArea">
-									<input type="password" id="password" name="password"
-										class="inputstyle" /> <label id="passwordTip" style=""></label>
+									<input type="password" id="loginPassword" name="loginPassword"
+										class="inputstyle" /> <label id="loginPasswordTip" style=""></label>
 								</div>
 							</div>
 
 							<div id="validateCode" style="display: inline-block;">
 								<label class="" for="p" global="true" key="login.password">验证码：</label>
 								
-								<input type="password" id="validateCode" name="validateCode"
+								<input type="" id="loginValidateCode" name="loginValidateCode"
 									class="inputstyle" style="width: 50px" />
-									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									 <label for="p"><b>fjei</b></label>
-									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="">刷新</a>
-									 <label id="validateCodeTip" style=""></label>
+									 &nbsp;&nbsp;&nbsp;&nbsp;
+									 <b><label for="p" class="code"></label></b>
+									 &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="refreshValidateCode">刷新</a>
+									 <label class="validateCodeTip"
+									style="font: red"></label>
 							</div>
 
 
 							<div style="padding-left: 50px; margin-top: 20px;">
 								<input id="loginBtn" value="登 录" style="width: 150px;"
 									class="button_blue"></input>
+							</div>
+							<br/><br/>
+							<div style="padding-left: 50px; margin-top: 20px;">
+							<label id="loginBtnTip"
+									style="font: red"></label>
 							</div>
 						</form>
 					</div>
@@ -123,9 +129,9 @@
 								<input type="" id="registerValidateCode" name="registerValidateCode"
 									class="inputstyle" style="width: 50px" />
 									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									 <b><label for="p" id="code"></label></b>
-									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="registerRefreshValidateCode">刷新</a>
-									 <label id="registerValidateCodeTip"
+									 <b><label for="p" class="code"></label></b>
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="refreshValidateCode">刷新</a>
+									 <label class="validateCodeTip"
 									style="font: red"></label>
 							</div>
 						</li>
@@ -134,8 +140,11 @@
 									<input id="registerBtn" value="注 册" style="width: 150px;"
 										class="button_blue"></input>
 							</div>
-							 <label id="registerTip"
+							<br/><br/><br/><br/>
+							<div>
+							 <label id="registerTip" style="padding-left: 50px; margin-top: 20px;"
 									style="font: red"></label>
+							</div>
 						</li>
 
 					</ul>

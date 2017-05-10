@@ -1,3 +1,5 @@
+
+var host = "http://localhost:8080/web";
 document.write("<script language='javascript' src='scripts/util.js'></script>");
 $(function(){
 	$('#switch_qlogin').click(function(){
@@ -23,33 +25,44 @@ $(function(){
 	}
 	
 	var registerEmailDefaultValue = "请输入邮箱";
-	var registerPasswordDefaultValue = "6-10位,包含大小写"
+	var registerPasswordDefaultValue = "6-10位,包含字母和数字"
 	var registerConfirmPasswordDefaultValue = "请再输入一遍,确认密码";
 	
 	var passwordValidateSuccess = "密码格式正确";
 	var passwordValidateFailed = "密码格式错误";
 	
+	var loginPasswordEmpty = "密码为空,请输入密码";
+	
 	var passwordConfirmPasswordSuccess = "已确认密码";
 	var passwordConfirmPasswordFailed = "两次密码输入不一致";
 	
-	var validateCodeFailed = "验证码验证失败";
-	var validateCodeSuccess = "验证码验证成功";
+	var validateCodeFailed = "验证失败";
+	var validateCodeSuccess = "验证成功";
+	
+	
+	var loginEmailDefaultValue = registerEmailDefaultValue;
+	var loginPasswordDefaultValue=registerPasswordDefaultValue;
+	
+	
 	
 	
 	$("#registerEmail").attr("placeholder",registerEmailDefaultValue);
 	$("#registerPassword").attr("placeholder", registerPasswordDefaultValue);
 	$("#registerConfirmPassword").attr("placeholder", registerConfirmPasswordDefaultValue);
 	
-
+	$("#loginEmail").attr("placeholder", loginEmailDefaultValue);
+	$("#loginPassword").attr("placeholder", loginPasswordDefaultValue);
+	
+	
 	
 	function applyValidateCode(){
-		post("http://localhost:8080/web/user/apply/validatecode/"
+		post(host + "/user/apply/validatecode/"
 				,{}
 				, function(data){
 					if(data.code == "1"){
-						$("#code").text(data.result);
+						$(".code").text(data.result);
 					}else{
-						$("#code").text(data.msg);
+						$(".code").text(data.msg);
 					}
 				});
 	}
@@ -66,17 +79,38 @@ $(function(){
 	 */
 	init();
 	
-	function emailValidateWithTip(email){
+	/***
+	 * @see #emailValidateWithTip
+	 * 登录时验证邮箱.不向后台请求
+	 */
+	function emailLoginValidateWithTip(email, tip){
 		var emailValue = email.val();
-		var tip = $("#registerEmailTip");
 		tip.text("");
 		if(!emailValidate(emailValue)){
 			$(this).css("border-color","red");
 			tip.css("color", "red").attr("class", "0").html("请输入正确格式的email");
 		}else{
 			tip.attr("class", "1");
+		}
+			/**
+			 * 如果tip class属性为1 那么说明 邮箱格式正确,但不代表 邮箱尚未被注册
+			 */
+			return tip.attr("class") == "1" ? true : false;
+	}
+	
+	/***
+	 * 注册时校验邮箱,需要后台验证此邮箱是否被注册
+	 */
+	function emailValidateWithTip(email, tip){
+		var emailValue = email.val();
+		tip.text("");
+		if(!emailValidate(emailValue)){
+			email.css("border-color","red");
+			tip.css("color", "red").attr("class", "0").html("请输入正确格式的email");
+		}else{
+			tip.attr("class", "1");
 			//如果正确的邮箱格式,那么就发送请求验证邮箱是否存在
-			post("http://localhost:8080/web/user/email/validate/unique"
+			post(host + "/user/email/validate/unique"
 					,{"email" : emailValue}
 					, function(data){
 						if(data.code == "1"){
@@ -102,20 +136,87 @@ $(function(){
 		};
 	}
 	
+	/***
+	 * 登录输入邮箱后,失去焦点时校验
+	 */
+	$("#loginEmail").blur(function(){
+		var tip = $("#loginEmailTip");
+		emailLoginValidateWithTip($(this), tip);
+	});
+	/************************************************/
+	/**
+	 * 
+	 */
+	function loginPasswordValidate(loginPassword,tip){
+		if(loginPassword.val() == null || loginPassword.val() == "" ){
+			tip.css("color", "red").text(loginPasswordEmpty);
+			$(this).css("border-color", "red");
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 登录时密码框离开时触发,如果密码为空,那么提示
+	 */
+	$("#loginPassword").blur(function(){
+		var tip = $("#loginPasswordTip");
+		tip.text("");
+		loginPasswordValidate($(this), tip);
+	});
+	
+	
+	
+	
+	$("#loginBtn").click(function(){
+		var loginEmail = $("#loginEmail");
+		var loginEmailTip = $("#loginEmailTip");
+		var loginPassword = $("#loginPassword");
+		var loginPasswordTip = $("#loginPasswordTip");
+		var loginValidateCode = $("#loginValidateCode");
+		var loginValidateCodeTip = $(".validateCodeTip");
+		
+		var loginBtnTip = $("#loginBtnTip");
+		
+		var emailResult = emailLoginValidateWithTip(loginEmail, loginEmailTip);
+		var passwordResult = loginPasswordValidate(loginPassword, loginPasswordTip);
+		var validateCodeResult = validateCodeWithTip(loginValidateCode.val(), loginValidateCodeTip);
+		if(!(emailResult == true && passwordResult == true && validateCodeResult == true)){
+			return false;
+		}else{
+			post( host+"/user/login"
+					,{"email" : loginEmail.val()
+				      ,"password" : loginPassword.val()
+				      ,"clientCode" : loginValidateCode.val()}
+			, function(data){
+				if(data.code == "2"){
+					loginValidateCodeTip.css("color", "red").text(data.msg);
+					$(".code").text(data.result.validateCode);
+				}else if(data.code == "0"){
+					//loginValidateCodeTip.css("color", "red").text(data.msg);
+					loginBtnTip.css("color", "red").text(data.msg);
+					$(".code").text(data.result.validateCode);
+				}else if(data.code == "1"){
+					alert(data.msg);
+				}
+			});
+		}
+	});
+	
 	
 	/**
 	 * 注册邮箱需要验证邮箱格式.验证邮箱是否已经被注册
 	 */
 	$("#registerEmail").blur(function(){
-		emailValidateWithTip($(this));
+		var tip = $("#registerEmailTip");
+		emailValidateWithTip($(this), tip);
 	});
 	/***********************************************/
 	
 	var password = $("#registerPassword");
 	
-	function passwordValidate(password){
+	function passwordValidate(password, tip){
 		var passwordValue = password.val();
-		var tip = $("#registerPasswordTip");
 		if(validatePassword(passwordValue)){
 			//tip以及输入框变成绿色
 			tip.css("color", "green").text(passwordValidateSuccess);
@@ -134,7 +235,8 @@ $(function(){
 	 */
 	password.blur(function(){
 		var password = $(this);
-		passwordValidate(password);
+		var tip = $("#registerPasswordTip");
+		passwordValidate(password, tip);
 	});
 	/***********************************************/
 	
@@ -171,27 +273,28 @@ $(function(){
 	/**
 	 * 验证密码
 	 */
-	function validateCodeWithTip(code){
-		var tip = $("#registerValidateCodeTip");
+	function validateCodeWithTip(code, tip){
 		if(typeof code == "undefined" || code == null || code == undefined || code == ""){
 			//tip.css("color", "green");
 			tip.css("color", "red").text(validateCodeFailed);
 			return false;
 		}else{
+			tip.text("");
 			return true;
 		}
 	}
 	
-	$("#registerValidateCode").blur(function(){
+	$("#validateCode").blur(function(){
 		var validateCode = $(this);
-		if(validateCodeWithTip(validateCode.val())){
+		var tip = $(".validateCodeTip");
+		if(validateCodeWithTip(validateCode.val(), tip)){
 			return true;
 		}else{
 			return false;
 		}
 	});
 	
-	$("#registerRefreshValidateCode").click(function(){
+	$(".refreshValidateCode").click(function(){
 		var refresh = $(this);
 		applyValidateCode();
 	});
@@ -209,31 +312,35 @@ $(function(){
 		var password = $("#registerPassword");
 		var confirmPassword = $("#registerConfirmPassword");
 		var validateCode = $("#registerValidateCode");
-		var emailResult = emailValidateWithTip(email);
-		var passwordResult = passwordValidate(password);
+		var emailResult = emailValidateWithTip(email, $("#registerEmailTip"));
+		var passwordResult = passwordValidate(password , $("#registerEmailTip"));
 		var confirmPasswordResult = confirmPasswordValidate(confirmPassword);
-		var validateCodeResult = validateCodeWithTip(validateCode.val());
+		var validateCodeResult = validateCodeWithTip(validateCode.val(), $("#registerValidateCodeTip"));
 		emailResult = emailResult();
 		
-		if(!(emailResult == true && passwordResult == true && confirmPasswordResult == true && validateCodeResult== true)){
-			
+		if(!(emailResult == true && passwordResult == true && confirmPasswordResult == true && validateCodeResult== true)){			
 			return;
 		}
-		post("http://localhost:8080/web/user/register"
-				,{"x.withCredentials": true,
-					"email" : email.val()
+		post(host + "/user/register"
+				,{"email" : email.val()
 					, "password" : password.val()
 					, "clientCode" : validateCode.val()}
 				,function(data){
 					if(data.code == "2"){
-						$("#registerValidateCodeTip").css("color", "red").text(data.msg);
-						$("#code").text(data.result.validateCode);
+						//alert($("validateCodeTip").text());
+						$(".validateCodeTip").css("color", "red").text(data.msg);
+						$(".code").text(data.result.validateCode);
 					}else if(data.code == "0"){
-						$("#code").text(data.result.validateCode);
-						$("registerTip").css("color", "red").text(data.msg);
-					}else{//注册成功
+						$(".code").text(data.result.validateCode);
+						$("#registerTip").css("color", "red").text(data.msg);
+					}else if(data.code == "1"){//注册成功
 						alert(data.msg);
+					}else if(data.code == "3"){
+						$(".code").text(data.result.validateCode);
+						$("#registerTip").css("color", "red").text(data.msg);
+						emailValidateWithTip(email, $("#registerEmailTip"));
 					}
+					//console.log(data);
 					
 		});//post
 		
@@ -241,6 +348,10 @@ $(function(){
 	});
 	/**************************************************/
 
+	
+	
+	
+	
 });
 	
 function validatePassword(password){
